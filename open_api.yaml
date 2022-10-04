@@ -22,47 +22,70 @@ tags: #segmen
     description: managemen transaksi dengan vendor
 
 paths:
-  /expedisi:
+  /vendor:
     get:
-      summary: "show all expedisi"
+      summary: "show all vendor"
       tags:
-        - "expedisi"
+        - "vendor"
+      parameters:
+        - name: J_expedisi
+          in: query
+          description: "Filter by Jalur Expedisi(darat/laut/udara)"
+          required: false
+          schema :
+            type: string
+          examples:
+            darat:
+              description: "example vendor exp darat"
+              value : "darat"
+            laut:
+              description: "example vendor exp laut"
+              value : "laut"
+            udara :
+              description: "example vendor exp udara"
+              value: "udara"
+        - name: is_done
+          in : query
+          description: "filter by expedisi is_done"
+          required: false
+          schema :
+            type: boolean
+            nullable: true
+            default : true
       responses:
         '200':
-          description: "berhasil mengambil seluruh data expedisi"
-      #parameters :
-
+          description: "berhasil mengambil seluruh data vendor order"
           content:
             application/json:
               schema:
-                $ref : "#/components/schemas/expedisiObj"
+                $ref : "#/components/schemas/ArrayVendorObj"
               example:
                 id: 1
                 nama_pj: "Bondan"
                 transport: "Truck"
-                J_expedisi: "Darat"
+                J_expedisi: "darat"
                 tgl_kirim: "2022-09-22"
                 tgl_sampai: "2022-10-03"
                 is_done : true       
         '500':
           $ref: "#components/responses/500"
-
+     
 
     post :
-      summary: "Add data expedisi"
+      summary: "Add data logistics order"
       tags:
-        - "expedisi"
+        - "vendor"
       requestBody :
         required: true
         content:
           "application/json":
             schema:
-              $ref : "#/components/schemas/expedisiObj"
+              $ref : "#/components/schemas/vendorObj"
             example:
               id: 1
               nama_pj: "Bondan"
               transport: "Truck"
-              J_expedisi: "Darat"
+              J_expedisi: "darat"
               tgl_kirim: "2022-09-22"
               tgl_sampai: "2022-10-03"
               is_done : true 
@@ -74,18 +97,20 @@ paths:
             application/json:
               schema :
                 type: object
-                $ref : "#/components/schemas/expedisiResSucses"
+                $ref : "#/components/schemas/vendorResSucses"
               example : 
                 id: 1
                 nama_pj: "Bondan"
                 transport: "Truck"
-                J_expedisi: "Darat"
+                J_expedisi: "darat"
                 tgl_kirim: "2022-09-22"
                 tgl_sampai: "2022-10-03"
                 is_done : true 
         '500':
           $ref : "#/components/responses/500"
 
+
+        
 
 
 components:
@@ -113,7 +138,7 @@ components:
               data :
                 type: object    
   schemas:
-    "expedisiObj":
+    "vendorObj":
       type: object
       properties:
         "id":
@@ -133,14 +158,19 @@ components:
           format: date
         "is_done":
           type: boolean
-          default: false
-    "expedisiResSucses":
+          default: true
+    "vendorResSucses":
       type: object
       properties:
         message: 
           type: string
         data :
           type: object
+
+    "ArrayVendorObj":
+      type: array
+      items :
+        $ref: "#/components/schemas/vendorObj"      
     
 
       
