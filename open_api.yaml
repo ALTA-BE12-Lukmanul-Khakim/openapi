@@ -11,19 +11,22 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
 servers: #lokasi layanan dapat diakses
-  - url: https://api.server.test/v1
+  - url: localhost:8000
 
 tags: #segmen
-  - name: vendor
+  - name: user
     description: managemen data user
-  - name: expedisi
+  - name: vendor
     description: managemen vendor pengirim
-  - name: transaction
+  - name: expedisi
     description: managemen transaksi dengan vendor
 
 paths:
   /vendor:
     get:
+      security:
+        - VendorAuth : []
+          
       summary: "show all vendor"
       tags:
         - "vendor"
@@ -58,20 +61,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref : "#/components/schemas/ArrayVendorObj"
-              example:
-                id: 1
-                nama_pj: "Bondan"
-                transport: "Truck"
-                J_expedisi: "darat"
-                tgl_kirim: "2022-09-22"
-                tgl_sampai: "2022-10-03"
-                is_done : true       
+                $ref : "#/components/schemas/ArrayVendorObj"       
         '500':
           $ref: "#components/responses/500"
      
 
     post :
+      security:
+        - VendorAuth : []
       summary: "Add data logistics order"
       tags:
         - "vendor"
@@ -80,15 +77,7 @@ paths:
         content:
           "application/json":
             schema:
-              $ref : "#/components/schemas/vendorObj"
-            example:
-              id: 1
-              nama_pj: "Bondan"
-              transport: "Truck"
-              J_expedisi: "darat"
-              tgl_kirim: "2022-09-22"
-              tgl_sampai: "2022-10-03"
-              is_done : true 
+              $ref : "#/components/schemas/vendorObj"   
 
       responses:
         '201':
@@ -98,14 +87,7 @@ paths:
               schema :
                 type: object
                 $ref : "#/components/schemas/vendorResSucses"
-              example : 
-                id: 1
-                nama_pj: "Bondan"
-                transport: "Truck"
-                J_expedisi: "darat"
-                tgl_kirim: "2022-09-22"
-                tgl_sampai: "2022-10-03"
-                is_done : true 
+              
         '500':
           $ref : "#/components/responses/500"
 
@@ -114,6 +96,12 @@ paths:
 
 
 components:
+  securitySchemes:
+    "VendorAuth" :
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   responses:
     '500':
       description: "Server eror"
@@ -159,6 +147,15 @@ components:
         "is_done":
           type: boolean
           default: true
+      example:
+        id: 1
+        nama_pj: "Bondan"
+        transport: "Truck"
+        J_expedisi: "darat"
+        tgl_kirim: "2022-09-22"
+        tgl_sampai: "2022-10-03"
+        is_done : true 
+        
     "vendorResSucses":
       type: object
       properties:
@@ -166,7 +163,15 @@ components:
           type: string
         data :
           type: object
-
+      example : 
+        id: 1
+        nama_pj: "Bondan"
+        transport: "Truck"
+        J_expedisi: "darat"
+        tgl_kirim: "2022-09-22"
+        tgl_sampai: "2022-10-03"
+        is_done : true 
+        
     "ArrayVendorObj":
       type: array
       items :
